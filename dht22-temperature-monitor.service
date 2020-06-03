@@ -1,0 +1,12 @@
+[Unit]
+Description=Temperature Monitor Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/home/pi/.venvs/default/bin/python /home/pi/Projects/dht22_temp_monitor/dht22_temp_monitor.py -r localhost -f 30
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
