@@ -12,12 +12,12 @@ add the following to your `/etc/systemd/system` folder, name it something sensib
 ```
 [Unit]
 Description=Temperature Monitor Service
-After=redis-server.service
+After=network.target
 
 [Service]
 Type=simple
 User=ubuntu
-ExecStart=/home/ubuntu/.venvs/default/bin/python /home/ubuntu/Projects/cpu_temp_monitor/cpu_temp_monitor.py -r -f 10
+ExecStart=/home/pi/.venvs/default/bin/python /home/pi/Projects/dht22_temp_monitor/dht22_temp_monitor.py -r localhost -f 30
 Restart=on-abort
 
 [Install]
@@ -28,7 +28,7 @@ After installation, run `sudo systemctl daemon-reload` to pick up the changes, t
 
 You can be sure it's running by checking `sudo systemctl status dht22-temperature-monitor` and `sudo journalctl -u dht22-temperature-monitor` for details.
 
-When satisfied that everything is working as intended, you can permanently install the temperature monitor by entering `sudo systemctl enable dht22-temperature-monitor-service`.
+When satisfied that everything is working as intended, you can permanently install the temperature monitor by entering `sudo systemctl enable dht22-temperature-monitor.service`.
 
 ## License
 
