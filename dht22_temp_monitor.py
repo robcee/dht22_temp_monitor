@@ -24,20 +24,37 @@ import Adafruit_DHT
 DHT_SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = 4
 
-
+"""
+Read dht22 sensor. Retry if error.
+return -100, -100 if still unable to read after retrying.
+"""
 def get_temp_and_humidity():
     """Read twice for better accuracy"""
     humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
     humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
-    while (humidity is None or temperature is None):
+
+    """if error, retry 5 times"""
+    count = 0
+    while humidity is None or temperature is None and count < 5:
+        print("read None off sensor, retrying... {}".format(count))
         time.sleep(1)
+        count = count + 1
         humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
 
+    """if still error, return -100, -100"""
+    if humidity is None or temperature is None:
+        return -100, -100
+    
     return (round(temperature, 1), round(humidity, 1))
 
 def write_to_redis(address):
     hostname = socket.gethostname()
     temperature, humidity = get_temp_and_humidity()
+
+    if temperature == -100 or humidity == -100:
+        print("error reading temperature and humidity")
+        return
+    
     r = redis.Redis(host=address, port=6379, db=0)
     r.set(hostname + '.temperature', temperature)
     r.set(hostname + '.humidity', humidity)
@@ -45,6 +62,11 @@ def write_to_redis(address):
 
 def write_to_console(dummy):
     temperature, humidity = get_temp_and_humidity()
+
+    if temperature == -100 or humidity == -100:
+        print("No temp or humidity detected")
+        return
+
     print(f"{temperature}℃ , {humidity}%")
 
 def main(args):
