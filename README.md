@@ -18,7 +18,8 @@ After=network.target
 Type=simple
 User=ubuntu
 ExecStart=/home/pi/.venvs/default/bin/python /home/pi/Projects/dht22_temp_monitor/dht22_temp_monitor.py -r localhost -f 30
-Restart=on-abort
+Restart=on-failure
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target

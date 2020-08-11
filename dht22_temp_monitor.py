@@ -29,6 +29,9 @@ def get_temp_and_humidity():
     """Read twice for better accuracy"""
     humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
     humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
+    while (humidity is None or temperature is None):
+        time.sleep(1)
+        humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
 
     return (round(temperature, 1), round(humidity, 1))
 
