@@ -11,7 +11,7 @@ USAGE: python dht22_temp_monitor [-r|--redis address] [-f|--frequency seconds] -
 """
 
 __author__ = "Rob Campbell"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __license__ = "The Unlicense"
 
 import argparse
